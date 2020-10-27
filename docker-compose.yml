@@ -1,15 +1,15 @@
 version: '3' # composeファイルのバーション指定
 services:
-  app: # service名
+  apiserver: # service名
     build:
-      context: .
-      dockerfile: ./docker/go/Dockerfile
-    container_name: mystery-go
+      context: ./apiserver
+      dockerfile: docker/Dockerfile
+    container_name: mystery-apiserver
     tty: true # コンテナの起動永続化
     volumes:
-      - .:/go/src/mystery_land # マウントディレクトリ指定
+      - ./apiserver:/go/src/mystery_land/apiserver # マウントディレクトリ指定
     ports:
-      - "8888:8080" #コンテナの8080番に転送される。コンテナの8080はポートが開いてる
+      - "8888:8888" #コンテナの8080番に転送される。コンテナの8080はポートが開いてる
 #    entrypoint:
 #      # mysqlが立ち上がるまで待つ
 #      - dockerize
@@ -34,16 +34,16 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - .db-store:/var/lib/mysql
-  vue:
+      - ./db/.db-store:/var/lib/mysql
+  client:
     build:
-      context: .
-      dockerfile: ./docker/vue/Dockerfile
-    container_name: mystery-vue
+      context: ./client
+      dockerfile: ./docker/Dockerfile
+    container_name: mystery-client
     ports:
       - 3000:3000
     volumes:
-      - .:/app
+      - ./client:/app
     working_dir: /app
     tty: true
     # command: sh -c "cd assets && yarn install && yarn serve"
