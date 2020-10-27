@@ -9,7 +9,7 @@ services:
     volumes:
       - ./apiserver:/go/src/mystery_land/apiserver # マウントディレクトリ指定
     ports:
-      - "8888:8888" #コンテナの8080番に転送される。コンテナの8080はポートが開いてる
+      - "8888:8888" #コンテナの8888番に転送される。コンテナの8888はポートが開いてる
 #    entrypoint:
 #      # mysqlが立ち上がるまで待つ
 #      - dockerize
@@ -41,7 +41,7 @@ services:
       dockerfile: ./docker/Dockerfile
     container_name: mystery-client
     ports:
-      - 3000:3000
+      - 8080:8080
     volumes:
       - ./client:/app
     working_dir: /app
