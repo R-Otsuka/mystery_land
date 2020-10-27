@@ -25,6 +25,7 @@ services:
       - mysql
   mysql:
     image: mysql:5.7.30
+    container_name: mystery-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: user
