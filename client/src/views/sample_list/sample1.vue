@@ -1,5 +1,8 @@
 <template>
-  <div>test1</div>
+  <div>
+    <p class="mx-auto" style="width: 200px;">⠁⠡⠁⠊⠩⠚⠷⠐⠞⠓</p>
+
+  </div>
 </template>
 
 <script>
