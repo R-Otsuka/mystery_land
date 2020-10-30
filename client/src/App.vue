@@ -1,60 +1,54 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+    <nav>
+      <v-content>
+        <v-toolbar color="primary" class="elevation-2">
+          <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-toolbar-title>Question</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon>
+            <v-icon>mdi-keyboard-backspace</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <div class="mt-8">
+          <v-card class="mx-auto" max-width="1000">
+            <router-view></router-view>
+          </v-card>
+        </div>
+      </v-content>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-main>
-      <HelloWorld/>
-    </v-main>
+      <v-navigation-drawer v-model="drawer" app>
+        <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
+          <v-list-item-icon class="itemIcon">
+            <v-icon v-if=link.icon>
+              {{ icon.unlock }}
+            </v-icon>
+            <v-icon v-else>
+              {{ icon.lock }}
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ link.text }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-navigation-drawer>
+    </nav>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
-
 export default {
-  name: 'App',
-
-  components: {
-    HelloWorld,
-  },
-
-  data: () => ({
-    //
+  data:() =>({
+    drawer:false,
+    icon:{
+      "unlock":"mdi-lock-open-variant",
+      "lock":"mdi-lock",
+    },
+    links: [
+      {icon:true, text:'Q1',route:'/sample/1'},
+      {icon:true, text:'Q2',route:'/sample/2'},
+      {icon:false, text:'Q3',route:'/sample/3'},
+    ]
   }),
-};
+}
 </script>
