@@ -23,15 +23,17 @@
         <v-responsive class="rounded-circle d-inline-flex warning lighten-2" v-bind:class=items[4].color height="64" width="64"></v-responsive>
       </v-col>
     </v-row>
-    <button @click="onShuffleClick">shuffle</button>
+    <button @click="startshuffle">shuffle</button>
+    <br>
+    <button @click="stopshuffle">stop</button>
   </v-container>
 <!--  </v-content>-->
 </template>
 <script>
 import _ from 'lodash';
 export default {
-  el: '#flip-list-demo',
   data:()=> ({
+    setfunc:true,
     items:[
       {id:0,color:'warning'},
       {id:1,color:'purple'},
@@ -43,6 +45,17 @@ export default {
   methods: {
     onShuffleClick() {
       this.items = _.shuffle(this.items);
+    },
+    startshuffle(){
+      if(this.setfunc == true){
+        setTimeout(this.startshuffle, 3000);
+        this.onShuffleClick()
+      }else{
+        this.setfunc = true
+      }
+    },
+    stopshuffle(){
+      this.setfunc = false
     }
   }
 }
