@@ -1,78 +1,70 @@
 <template>
 <!--  v-contentタグはサイドバー表示の際にpadding-leftの自動追加機能あり??-->
-<!--  <v-content class="py-10">-->
   <v-container>
-    <div class="mx-auto text-center py-5">
-      <transition>
-        <span class="rounded-circle d-inline-flex"
+    <div class="mx-auto text-center py-5 circle-top">
+      <transition name="bounce">
+        <div class="rounded-circle mx-auto"
               :class=items[0].color
               @click="hide(0)"
               v-show="items[0].visibility"
-              :style="{opacity: items[0].visibility ? 1 : 0}"
         >
-        </span>
+        </div>
       </transition>
     </div>
 <!--      start,center,など設定によりseparateを変えられる(公式参照)-->
-    <v-row justify="space-around" class="py-5">
+    <v-row justify="space-around" class="py-5 circle-center">
       <v-col cols="3" class="text-sm-left">
-        <transition>
-          <span class="rounded-circle d-inline-flex"
+        <transition name="bounce">
+          <div class="rounded-circle"
                 v-bind:class=items[1].color
                 @click="hide(1)"
                 v-show="items[1].visibility"
-                :style="{opacity: items[1].visibility ? 1 : 0}"
           >
-          </span>
+          </div>
         </transition>
       </v-col>
-      <v-col cols="3" class="text-sm-right">
-        <transition>
-          <span class="rounded-circle d-inline-flex"
+      <v-col cols="3" class="text-right">
+        <transition name="bounce">
+          <div class="rounded-circle float-right"
                 v-bind:class=items[2].color
                 @click="hide(2)"
                 v-show="items[2].visibility"
-                :style="{opacity: items[2].visibility ? 1 : 0}"
           >
-          </span>
+          </div>
         </transition>
       </v-col>
     </v-row>
     <p class="mx-auto text-center pb-10" style="width: 200px;">⠁⠡⠁⠊⠩⠚⠷⠐⠞⠓</p>
-    <v-row justify="center" class="py-5">
+    <v-row justify="center" class="circle-bottom">
       <v-col cols="3" class="text-sm-left">
-        <transition>
-          <span class="rounded-circle d-inline-flex"
+        <transition name="bounce">
+          <div
+                class="rounded-circle"
                 v-bind:class=items[3].color
                 @click="hide(3)"
                 v-show="items[3].visibility"
-                :style="{opacity: items[3].visibility ? 1 : 0}"
-          >
-          </span>
+          ></div>
         </transition>
       </v-col>
-      <v-col cols="3" class="text-sm-right">
-        <transition>
-          <span class="rounded-circle d-inline-flex"
+      <v-col cols="3" class="text-right">
+        <transition name="bounce">
+          <div class="rounded-circle float-right"
                 v-bind:class=items[4].color
                 @click="hide(4)"
                 v-show="items[4].visibility"
-                :style="{opacity: items[4].visibility ? 1 : 0}"
           >
-          </span>
+          </div>
         </transition>
       </v-col>
     </v-row>
-    <button @click="listShuffle">shuffle</button>
+    <button @click="listShuffle">shuffle</button><br>
     <br>
   </v-container>
-<!--  </v-content>-->
 </template>
 <script>
 import _ from 'lodash';
 export default {
   data:()=> ({
-    setfunc:false,
     items:[
       {id:0,color:'warning',visibility:true},
       {id:1,color:'purple',visibility:true},
@@ -95,20 +87,76 @@ export default {
 }
 </script>
 <style>
+
 .rounded-circle {
   border-radius: 50%;
-  width: 64px;
-  height: 64px;
+  width: 40px;
+  height: 40px;
   background: #000;
 }
-.v-leave-active{
-  transition: opacity 1s;
+.circle-top {
+  height:50px;
+  margin:10px;
 }
-.v-enter,
-.v-leave-to {
-  opacity: 0;
+.circle-center {
+  height: 60px;
+  margin: 10px;
 }
-@keyframes v-in {
+.circle-bottom {
+  height: 60px;
+  margin: 10px;
+}
+
+@media screen and (min-width:480px) {
+  /*画面サイズが480pxからはここを読み込む*/
+  .rounded-circle {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background: #000;
+  }
+  .circle-top {
+    height:80px;
+    margin:20px;
+  }
+  .circle-center {
+    height: 90px;
+    margin: 20px;
+  }
+  .circle-bottom {
+    height: 90px;
+    margin:20px;
+  }
+}
+@media screen and (min-width:1024px) {
+   /*画面サイズが1024pxからはここを読み込む */
+  .rounded-circle {
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    background: #000;
+  }
+  .circle-top {
+    height:100px;
+    margin:20px;
+  }
+  .circle-center {
+    height: 120px;
+    margin: 20px;
+  }
+  .circle-bottom {
+    height: 120px;
+    margin:20px;
+  }
+}
+
+.bounce-enter-active {
+  animation: bounce-in 1s;
+}
+.bounce-leave-active {
+  animation: bounce-in 1s reverse;
+}
+@keyframes bounce-in {
   0% {
     transform: scale(0);
   }
@@ -117,17 +165,6 @@ export default {
   }
   100% {
     transform: scale(1);
-  }
-}
-@keyframes v-out {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.5);
-  }
-  100% {
-    transform: scale(0);
   }
 }
 </style>
