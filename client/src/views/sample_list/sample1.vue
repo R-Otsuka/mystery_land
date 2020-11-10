@@ -5,7 +5,7 @@
       <transition name="bounce">
         <div class="rounded-circle mx-auto"
               :class=items[0].color
-              @click="hide(0)"
+              @click="judgeAndHide(0)"
               v-show="items[0].visibility"
         >
         </div>
@@ -17,7 +17,7 @@
         <transition name="bounce">
           <div class="rounded-circle"
                 v-bind:class=items[1].color
-                @click="hide(1)"
+                @click="judgeAndHide(1)"
                 v-show="items[1].visibility"
           >
           </div>
@@ -27,21 +27,22 @@
         <transition name="bounce">
           <div class="rounded-circle float-right"
                 v-bind:class=items[2].color
-                @click="hide(2)"
+                @click="judgeAndHide(2)"
                 v-show="items[2].visibility"
           >
           </div>
         </transition>
       </v-col>
     </v-row>
-    <p class="mx-auto text-center pb-10" style="width: 200px;">⠁⠡⠁⠊⠩⠚⠷⠐⠞⠓</p>
+    <p v-if="clear" class="mx-auto text-center tenji">クリア！、password『hogefuga』</p>
+    <p v-else class="mx-auto text-center tenji">⠊⠛⠴⠐⠳⠽⠑⠱⠣⠐⠩⠛⠒⠊⠊⠷⠐⠞⠓</p>
     <v-row justify="center" class="circle-bottom">
       <v-col cols="3" class="text-sm-left">
         <transition name="bounce">
           <div
                 class="rounded-circle"
                 v-bind:class=items[3].color
-                @click="hide(3)"
+                @click="judgeAndHide(3)"
                 v-show="items[3].visibility"
           ></div>
         </transition>
@@ -50,14 +51,13 @@
         <transition name="bounce">
           <div class="rounded-circle float-right"
                 v-bind:class=items[4].color
-                @click="hide(4)"
+                @click="judgeAndHide(4)"
                 v-show="items[4].visibility"
           >
           </div>
         </transition>
       </v-col>
     </v-row>
-    <button @click="listShuffle">shuffle</button><br>
     <br>
   </v-container>
 </template>
@@ -65,6 +65,7 @@
 import _ from 'lodash';
 export default {
   data:()=> ({
+    balloonCount:0,
     items:[
       {id:0,color:'warning',visibility:true},
       {id:1,color:'purple',visibility:true},
@@ -73,20 +74,45 @@ export default {
       {id:4,color:'success',visibility:true}
     ]
   }),
+  computed:{
+    clear(){
+      if(this.balloonCount==5){
+        console.log("clear")
+        return true
+      }else{
+        return false
+      }
+    }
+  },
   methods: {
     listShuffle() {
       this.items = _.shuffle(this.items);
     },
-    hide(id){
-      if(this.items[id].visibility == true) {
-        this.items[id].visibility = !this.items[id].visibility
-        console.log(this.items[id].visibility)
+    judgeAndHide(id){
+      if(this.items[id].id == this.balloonCount) {
+        if (this.items[id].visibility == true) {
+          this.items[id].visibility = !this.items[id].visibility
+        }
+        this.balloonCount += 1
+      }else{
+        for(let i=0;i<this.items.length;i++){
+          this.items[i].visibility = true
+        }
+        this.balloonCount = 0
+        this.listShuffle()
       }
     },
+  },
+  created() {
+    this.listShuffle()
   }
 }
 </script>
 <style>
+.tenji{
+  padding-top:10px;
+  padding-bottom:15px;
+}
 
 .rounded-circle {
   border-radius: 50%;
@@ -127,6 +153,11 @@ export default {
     height: 90px;
     margin:20px;
   }
+  .tenji{
+    padding-top:10px;
+    padding-bottom:30px;
+  }
+
 }
 @media screen and (min-width:1024px) {
    /*画面サイズが1024pxからはここを読み込む */
@@ -148,13 +179,17 @@ export default {
     height: 120px;
     margin:20px;
   }
+  .tenji{
+    padding-top:10px;
+    padding-bottom:50px;
+  }
 }
 
 .bounce-enter-active {
-  animation: bounce-in 1s;
+  animation: bounce-in 0.5s;
 }
 .bounce-leave-active {
-  animation: bounce-in 1s reverse;
+  animation: bounce-in 0.5s reverse;
 }
 @keyframes bounce-in {
   0% {
