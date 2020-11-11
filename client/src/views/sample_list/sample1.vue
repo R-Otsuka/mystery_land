@@ -108,7 +108,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .tenji{
   padding-top:10px;
   padding-bottom:15px;
