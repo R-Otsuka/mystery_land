@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import SampleHome from '../views/sample_list/home'
+import SampleHome from '../views/sample_list/animationtest'
 import Sample1 from '../views/sample_list/sample1'
 import Sample2 from '../views/sample_list/sample2'
 import Sample3 from '../views/sample_list/sample3'
