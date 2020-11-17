@@ -1,5 +1,4 @@
 <template>
-<!--  v-contentタグはサイドバー表示の際にpadding-leftの自動追加機能あり??-->
   <v-container>
     <div class="mx-auto text-center py-5 circle-top">
       <transition name="bounce">
@@ -11,7 +10,6 @@
         </div>
       </transition>
     </div>
-<!--      start,center,など設定によりseparateを変えられる(公式参照)-->
     <v-row justify="space-around" class="py-5 circle-center">
       <v-col cols="3" class="text-sm-left">
         <transition name="bounce">
@@ -34,6 +32,7 @@
         </transition>
       </v-col>
     </v-row>
+<!--    クリアすると点字->パスワードに表示が変わる-->
     <p v-if="clear" class="mx-auto text-center tenji">クリア！、password『hogefuga』</p>
     <p v-else class="mx-auto text-center tenji">⠊⠛⠴⠐⠳⠽⠑⠱⠣⠐⠩⠛⠒⠊⠊⠷⠐⠞⠓</p>
     <v-row justify="center" class="circle-bottom">
@@ -65,7 +64,9 @@
 import _ from 'lodash';
 export default {
   data:()=> ({
-    balloonCount:0,
+    //次に消すべきボールのid
+    BalloonIdToClickNext:0,
+    //各ボールのhash情報
     items:[
       {id:0,color:'warning',visibility:true},
       {id:1,color:'purple',visibility:true},
@@ -75,8 +76,9 @@ export default {
     ]
   }),
   computed:{
+    //クリア時にtrueを返す
     clear(){
-      if(this.balloonCount==5){
+      if(this.BalloonIdToClickNext==5){
         console.log("clear")
         return true
       }else{
@@ -85,20 +87,23 @@ export default {
     }
   },
   methods: {
+    //ボールをシャッフルする。(vueインスタンスcreate時に実行)
     listShuffle() {
       this.items = _.shuffle(this.items);
     },
+    //ボールをクリックした時に実行される。
+    //クリック順が正しければ消す、そうでなければリセットし初期状態に戻す。
     judgeAndHide(id){
-      if(this.items[id].id == this.balloonCount) {
+      if(this.items[id].id == this.BalloonIdToClickNext) {
         if (this.items[id].visibility == true) {
           this.items[id].visibility = !this.items[id].visibility
         }
-        this.balloonCount += 1
-      }else if(this.items[id].id > this.balloonCount){
+        this.BalloonIdToClickNext += 1
+      }else if(this.items[id].id > this.BalloonIdToClickNext){
         for(let i=0;i<this.items.length;i++){
           this.items[i].visibility = true
         }
-        this.balloonCount = 0
+        this.BalloonIdToClickNext = 0
         this.listShuffle()
       }
     },
