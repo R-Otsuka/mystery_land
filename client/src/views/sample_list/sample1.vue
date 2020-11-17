@@ -94,7 +94,7 @@ export default {
           this.items[id].visibility = !this.items[id].visibility
         }
         this.balloonCount += 1
-      }else{
+      }else if(this.items[id].id > this.balloonCount){
         for(let i=0;i<this.items.length;i++){
           this.items[i].visibility = true
         }
