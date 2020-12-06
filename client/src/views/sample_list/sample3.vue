@@ -5,12 +5,23 @@
         {{ cell.number }}
       </div>
     </transition-group>
-    <button @click="start">
+    <button v-if="playing" @click="reset">
+      Reset
+    </button>
+    <button v-else @click="start">
       Start
     </button>
-    <button @click="shuffle">
-      Shuffle
-    </button>
+    <div>
+      {{checkHours | zeroPadding}}：{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}
+    </div>
+    <div v-if="finish">
+      <div v-if="clear">
+        clear
+      </div>
+      <div v-else>
+        fail
+      </div>
+    </div>
   </v-container>
 </template>
 
@@ -25,8 +36,26 @@ export default {
         show:true
       };
     }),
-    openNum:0
+    openNum:0,
+    playing:false,
+    animationId: 0,
+    hours: 0,
+    minutes: 0,
+    second: 0,
+    milisecond: 0,
+    startTime: 0,// スタート時間
+    endTime: 0,// ストップ押した時間
+    diffTime: 0, //スタートとストップ押した時の差分
+    flag: false,
   }),
+  filters:{
+    zeroPadding(value){
+      return value.toString().padStart(2, 0);
+    },
+    showMiliseconds(value){
+      return value.toString().padStart(3, 0);
+    }
+  },
   methods: {
     shuffle() {
       this.cells = _.shuffle(this.cells);
@@ -40,13 +69,82 @@ export default {
         this.openNum += 1
       }
     },
-    timerStart(){
-
-    },
     start(){
       this.shuffle()
-      this.timerStart()
-    }
+      this.timeStart()
+      this.playing = !this.playing
+    },
+    resetNumber(){
+      this.openNum = 0
+      // cellの全てをshowにする
+      for(var num of this.cells){
+        num.show = true
+      }
+    },
+    reset(){
+      this.resetNumber()
+      this.timeStop()
+      this.timeReset()
+      this.playing = !this.playing
+    },
+    setStartTime(time){
+      //performance.now()自体は前回のページから今回のページへと、遷移を開始した瞬間からの経過時間を算出する
+      this.startTime = performance.now() - time;
+    },
+    timeStart(){
+      if(this.flag){
+        return false;
+      }
+      const vm_data = this;
+      this.flag = true; // スタートしたらタイマーflagをtrueに
+      this.setStartTime(vm_data.diffTime);
+      (function progress(){
+        vm_data.endTime = performance.now();
+        vm_data.diffTime = vm_data.endTime - vm_data.startTime;
+        [vm_data.second, vm_data.milisecond] = [Math.floor(vm_data.diffTime / 1000), Math.floor(vm_data.diffTime % 1000)];
+        vm_data.animationId = window.requestAnimationFrame(progress);
+      }());
+    },
+    timeStop(){
+      this.flag = false;   // ストップしたらタイマーflagをfalseに
+      window.cancelAnimationFrame(this.animationId);
+    },
+    timeReset(){
+      console.log("reset")
+      if(this.flag){
+        return false;
+      }
+      this.startTime = this.diffTime = 0;
+    },
+  },
+  computed:{
+    finish(){
+      if(this.openNum === 25){
+        this.timeStop()
+        return true
+      }else{
+        return false
+      }
+    },
+    clear() {
+      if (this.diffTime < 25000) {
+        return true
+      }else{
+        return false
+      }
+    },
+    checkHours(){
+      return Math.floor(this.diffTime / 1000 / 60 / 60);
+    },
+    checkMinutes(){
+      return Math.floor(this.diffTime / 1000 / 60) % 60;
+    },
+    checkSeconds(){
+      return Math.floor(this.diffTime / 1000) % 60;
+    },
+    checkMiliSeconds(){
+      return Math.floor(this.diffTime % 1000);
+    },
   }
 }
 </script>
