@@ -1,25 +1,27 @@
 <template>
-  <v-container>
-    <transition-group name="cell" tag="div" class="touchNumbers">
+  <v-container class="text-center">
+    <transition-group name="cell" tag="div" class="touchNumbers d-inline-flex">
       <div v-for="(cell,index) in cells" @click="judgeAndHide(index)" :key="cell.id" class="cell rounded-circle" :class="{ show: cell.show }">
         {{ cell.number }}
       </div>
     </transition-group>
-    <button v-if="playing" @click="reset">
-      Reset
-    </button>
-    <button v-else @click="start">
-      Start
-    </button>
-    <div>
-      {{checkHours | zeroPadding}}：{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}
-    </div>
-    <div v-if="finish">
-      <div v-if="clear">
-        clear
+    <div class="pa-4">
+      <v-btn round color="success" v-if="playing" @click="reset">
+        Reset
+      </v-btn>
+      <v-btn round color="success" v-else @click="start">
+        Start
+      </v-btn>
+      <div class="pa-2">
+        {{checkHours | zeroPadding}}：{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}
       </div>
-      <div v-else>
-        fail
+      <div v-if="finish">
+        <div v-if="clear">
+          clear
+        </div>
+        <div v-else>
+          fail
+        </div>
       </div>
     </div>
   </v-container>
@@ -148,22 +150,22 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .touchNumbers {
   display: flex;
   flex-wrap: wrap;
-  width: 238px;
+  width:600px;
   margin-top: 10px;
 }
 .cell {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  width: 45px;
-  height: 45px;
+  width: 55px;
+  height: 55px;
   /*border: 1px solid #aaa;*/
-  margin-right: -1px;
-  margin-bottom: -1px;
+  margin-right: 15px;
+  margin-bottom: 15px;
 }
 
 .cell-move {
@@ -172,8 +174,8 @@ export default {
 
 .rounded-circle {
   border-radius: 50%;
-  width: 45px;
-  height: 45px;
+  width: 90px;
+  height: 90px;
   background-color: #ffffff;
   transition:all 0.2s ease-out;
 }
