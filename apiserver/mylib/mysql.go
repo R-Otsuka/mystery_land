@@ -19,7 +19,7 @@ func getGormConnect() *gorm.DB {
 	DBMS := "mysql"
 	USER := "root"
 	PASS := "root"
-	PROTOCOL := "tcp(mystery_land_mysql_1:3306)"
+	PROTOCOL := "tcp(localhost:3306)"
 	DBNAME := "mystery_land"
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
 	db, err := gorm.Open(DBMS, CONNECT)
