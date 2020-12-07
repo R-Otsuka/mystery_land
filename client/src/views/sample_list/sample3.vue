@@ -1,7 +1,7 @@
 <template>
   <v-container class="text-center">
     <transition-group name="cell" tag="div" class="touchNumbers d-inline-flex">
-      <div v-for="(cell,index) in cells" @click="judgeAndHide(index)" :key="cell.id" class="cell rounded-circle" :class="{ show: cell.show }">
+      <div v-for="(cell,index) in cells" @click="judgeAndHide(index)" :key="cell.id" class="rounded-circle" :class="{ show: cell.show }">
         {{ cell.number }}
       </div>
     </transition-group>
@@ -13,7 +13,7 @@
         Start
       </v-btn>
       <div class="pa-2">
-        {{checkHours | zeroPadding}}：{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}
+        {{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}} / 00：25：000
       </div>
       <div v-if="finish">
         <div v-if="clear">
@@ -66,9 +66,11 @@ export default {
       this.cells[id].show = false
     },
     judgeAndHide(index) {
-      if (this.cells[index].id == this.openNum) {
-        this.deleteballon(index)
-        this.openNum += 1
+      if(this.playing == true){
+        if (this.cells[index].id == this.openNum) {
+          this.deleteballon(index)
+          this.openNum += 1
+        }
       }
     },
     start(){
@@ -135,9 +137,6 @@ export default {
         return false
       }
     },
-    checkHours(){
-      return Math.floor(this.diffTime / 1000 / 60 / 60);
-    },
     checkMinutes(){
       return Math.floor(this.diffTime / 1000 / 60) % 60;
     },
@@ -151,33 +150,66 @@ export default {
 }
 </script>
 <style scoped>
+
 .touchNumbers {
   display: flex;
   flex-wrap: wrap;
-  width:600px;
+  width:300px;
   margin-top: 10px;
 }
-.cell {
+.rounded-circle {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  border-radius: 50%;
   width: 55px;
   height: 55px;
-  /*border: 1px solid #aaa;*/
-  margin-right: 15px;
-  margin-bottom: 15px;
-}
-
-.cell-move {
-  transition: transform 0.6s;
-}
-
-.rounded-circle {
-  border-radius: 50%;
-  width: 90px;
-  height: 90px;
+  margin-right: 5px;
+  margin-bottom: 5px;
   background-color: #ffffff;
   transition:all 0.2s ease-out;
+}
+
+@media screen and (min-width:480px) {
+  .touchNumbers {
+    display: flex;
+    flex-wrap: wrap;
+    width:480px;
+    margin-top: 10px;
+  }
+  .rounded-circle {
+    display: flex;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    transition:all 0.2s ease-out;
+  }
+}
+@media screen and (min-width:1024px) {
+  .touchNumbers {
+    display: flex;
+    flex-wrap: wrap;
+    width:600px;
+    margin-top: 10px;
+  }
+  .rounded-circle {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    transition:all 0.2s ease-out;
+  }
+}
+.cell-move {
+  transition: transform 0.6s;
 }
 .show{
   background-color: #00acc1;
