@@ -6,14 +6,14 @@
       </div>
     </transition-group>
     <div class="pa-4">
-      <v-btn round color="success" v-if="playing" @click="reset">
+      <v-btn rounded color="success" v-if="playing" @click="reset">
         Reset
       </v-btn>
-      <v-btn round color="success" v-else @click="start">
+      <v-btn rounded color="success" v-else @click="start">
         Start
       </v-btn>
       <div class="pa-2">
-        {{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}} / 00：25：000
+        <span :class="{'red--text accent-2':timeup}">{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}</span> / 00：25：000
       </div>
       <div v-if="finish">
         <div v-if="clear">
@@ -122,6 +122,13 @@ export default {
     },
   },
   computed:{
+    timeup(){
+      if(this.diffTime > 25000){
+        return true
+      }else{
+        return false
+      }
+    },
     finish(){
       if(this.openNum === 25){
         this.timeStop()
