@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <nav>
-      <v-content>
+      <v-main>
         <v-toolbar color="primary" class="elevation-2">
           <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
           <v-toolbar-title>Question</v-toolbar-title>
@@ -15,7 +15,7 @@
             <router-view></router-view>
           </v-card>
         </div>
-      </v-content>
+      </v-main>
 
       <v-navigation-drawer v-model="drawer" app>
         <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
