@@ -15,6 +15,13 @@ type Test struct {
 	Status string `gorm:"type:char(2);not null"`
 }
 
+type TouchNumbersRecord struct {
+	ID     int    `gorm:"primary_key;not null"`
+	Name   string `gorm:"type:varchar(200);not null"`
+	Time   string `gorm:"type:varchar(200);not null"`
+	Success bool `gorm:"type:bool;not null"`
+}
+
 func getGormConnect() *gorm.DB {
 	DBMS := "mysql"
 	USER := "root"
@@ -38,18 +45,18 @@ func getGormConnect() *gorm.DB {
 	db.SingularTable(true)
 
 	// マイグレーション（テーブルが無い時は自動生成）
-	db.AutoMigrate(&Test{})
+	db.AutoMigrate(&TouchNumbersRecord{})
 
 	fmt.Println("db connected: ", &db)
 	return db
 }
 
-// 商品テーブルにレコードを追加
-func insertTest(registerTest *Test) {
+// レコードを追加
+func insertTest(registerRecord *TouchNumbersRecord) {
 	db := getGormConnect()
 
 	// insert文
-	db.Create(&registerTest)
+	db.Create(&registerRecord)
 	defer db.Close()
 }
 
@@ -66,14 +73,14 @@ func findAllTest() []Test {
 
 func Createtable() {
 	// Testテーブルにデータを運ぶための構造体を初期化
-	var Test = Test{
-		Name:   "testname",
-		Memo:   "testmemo",
-		Status: "01",
+	var Record = TouchNumbersRecord{
+		Name:   "testotsuka",
+		Time:   "00:26:10",
+		Success: false,
 	}
 
 	// 構造体のポインタを渡す
-	insertTest(&Test)
+	insertTest(&Record)
 
 	// Testテーブルのレコードを全件取得する
 	resultTests := findAllTest()
