@@ -9,7 +9,7 @@ services:
     volumes:
       - ./apiserver:/go/src/mystery_land/apiserver # マウントディレクトリ指定
     ports:
-      - "8888:8888" #コンテナの8888番に転送される。コンテナの8888はポートが開いてる
+      - "8888:8800" #コンテナの8888番に転送される。コンテナの8888はポートが開いてる
 #    entrypoint:
 #      # mysqlが立ち上がるまで待つ
 #      - dockerize
