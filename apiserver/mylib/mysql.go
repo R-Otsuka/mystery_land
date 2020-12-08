@@ -14,7 +14,11 @@ type Test struct {
 	Memo   string `gorm:"type:varchar(400)"`
 	Status string `gorm:"type:char(2);not null"`
 }
-
+type JsonRequest struct {
+	Name  string `json:"name"`
+	Time  string    `json:"time"`
+	Success bool   `json:"success"`
+}
 type TouchNumbersRecord struct {
 	ID     int    `gorm:"primary_key;not null"`
 	Name   string `gorm:"type:varchar(200);not null"`
@@ -52,7 +56,7 @@ func getGormConnect() *gorm.DB {
 }
 
 // レコードを追加
-func insertTest(registerRecord *TouchNumbersRecord) {
+func Insert(registerRecord *TouchNumbersRecord) {
 	db := getGormConnect()
 
 	// insert文
@@ -71,16 +75,16 @@ func findAllTest() []Test {
 	return Tests
 }
 
-func Createtable() {
+func Createtable(name string,time string, success bool) {
 	// Testテーブルにデータを運ぶための構造体を初期化
 	var Record = TouchNumbersRecord{
-		Name:   "testotsuka",
-		Time:   "00:26:10",
-		Success: false,
+		Name:   name,
+		Time:   time,
+		Success: success,
 	}
 
 	// 構造体のポインタを渡す
-	insertTest(&Record)
+	Insert(&Record)
 
 	// Testテーブルのレコードを全件取得する
 	resultTests := findAllTest()
