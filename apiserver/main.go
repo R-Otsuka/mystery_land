@@ -55,7 +55,7 @@ func main() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		mylib.Createtable(json.Name,json.Time,json.Success)
+		mylib.DataInsert(json.Name,json.Time,json.Success)
 		c.JSON(http.StatusOK, gin.H{"name": json.Name, "time": json.Time, "success": json.Success})
 	})
 

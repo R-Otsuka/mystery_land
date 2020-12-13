@@ -6,20 +6,20 @@
       </div>
     </transition-group>
     <div class="pa-4">
-      <v-btn rounded color="success" v-if="playing" @click="reset">
+      <v-btn rounded color="success" v-if="nowPlaying" @click="reset">
         Reset
       </v-btn>
       <v-btn rounded color="success" v-else @click="start">
         Start
       </v-btn>
       <div class="pa-2">
-        <span :class="{'red--text accent-2':timeup}">{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}</span> / 00：25：000
+        <span :class="{'red--text accent-2':timeup}">{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}</span> / 00：30：000
       </div>
       <br>
 <!--      <button @click="Send">Get</button><br>-->
-      <button @click="Post">Post</button>
+<!--      <button @click="Post">Post</button>-->
       <div v-if="finish">
-        <div v-if="clear">
+        <div v-if="!timeup">
           clear
         </div>
         <div v-else>
@@ -43,8 +43,8 @@ export default {
         show:true
       };
     }),
-    openNum:0,
-    playing:false,
+    openNumCount:0, //消した数字の数
+    nowPlaying:false,
     animationId: 0,
     hours: 0,
     minutes: 0,
@@ -64,37 +64,37 @@ export default {
     }
   },
   methods: {
-    shuffle() {
+    shuffle() { //数字のシャッフル、start時に実行
       this.cells = _.shuffle(this.cells);
     },
-    deleteballon(id) {
+    deleteNum(id) { //数字を消す。
       this.cells[id].show = false
     },
-    judgeAndHide(index) {
-      if(this.playing == true){
-        if (this.cells[index].id == this.openNum) {
-          this.deleteballon(index)
-          this.openNum += 1
+    judgeAndHide(index) { //数字クリック時に正誤判定を行う
+      if(this.nowPlaying == true){
+        if (this.cells[index].id == this.openNumCount) {
+          this.deleteNum(index)
+          this.openNumCount += 1
         }
       }
     },
-    start(){
+    start(){ //スタート時、シャッフルとタイマーを起動
       this.shuffle()
       this.timeStart()
-      this.playing = !this.playing
+      this.nowPlaying = !this.nowPlaying
     },
-    resetNumber(){
-      this.openNum = 0
-      // cellの全てをshowにする
-      for(var num of this.cells){
-        num.show = true
+    resetNumber(){ //数字の再表示
+      this.openNumCount = 0
+      // cellの全てを再表示する
+      for(let cell of this.cells){
+        cell.show = true
       }
     },
-    reset(){
+    reset(){ //ゲームリセット
       this.resetNumber()
       this.timeStop()
       this.timeReset()
-      this.playing = !this.playing
+      this.nowPlaying = !this.nowPlaying
     },
     setStartTime(time){
       //performance.now()自体は前回のページから今回のページへと、遷移を開始した瞬間からの経過時間を算出する
@@ -125,19 +125,10 @@ export default {
       }
       this.startTime = this.diffTime = 0;
     },
-    // async Send() {
-    //   axios.get('http://localhost:8800/')
-    //       .then(response => {
-    //         console.log(response.data) // mockData
-    //         console.log(response.status) // 200
-    //       })
-    // },
-    async Post() {
-      console.log(Math.round(this.diffTime),this.clear)
-      console.log(typeof(Math.round(this.diffTime)),this.clear)
+    async Post() { //ゲーム終了時にAPIを叩いて、タイムの記録とランキング表示を行う
       axios.post('http://localhost:8800/record/register', {
         name: "default",
-        time: Math.round(this.diffTime),
+        time: Math.round(this.diffTime), //millisecondで送信
         success: this.clear
       })
           .then(function (response) {
@@ -149,25 +140,19 @@ export default {
     }
   },
   computed:{
-    timeup(){
-      if(this.diffTime > 25000){
+    timeup(){ //timeLimitに間に合うとtrueを返す
+      const timeLimit = 30
+      if(this.diffTime > timeLimit){
         return true
       }else{
         return false
       }
     },
-    finish(){
-      if(this.openNum === 25){
+    finish(){ //ゲームが終わるとtrueを返す
+      if(this.openNumCount === 25){
         this.timeStop()
-        //後々nameの入力受付機能を追加したい
+        //後々、名前の入力を受け付けるように仕様変更したい。
         this.Post()
-        return true
-      }else{
-        return false
-      }
-    },
-    clear() {
-      if (this.diffTime < 25000) {
         return true
       }else{
         return false
@@ -182,7 +167,6 @@ export default {
     checkMiliSeconds(){
       return Math.floor(this.diffTime % 1000);
     },
-
   }
 }
 </script>
