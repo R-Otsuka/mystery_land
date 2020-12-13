@@ -9,11 +9,11 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && go get github.com/go-sql-driver/mysql
 
 # コンテナ内に作業ディレクトリを作成
-RUN mkdir -p /go/src/github.com/kamio06/mystery_land
+RUN mkdir -p /go/src/github.com/kamio06/mystery_land/apiserver
 # コンテナログイン時のディレクトリ指定
-WORKDIR /go/src/github.com/kamio06/mystery_land
+WORKDIR /go/src/github.com/kamio06/mystery_land/apiserver
 # ホストのファイルをコンテナの作業ディレクトリに移行
-ADD . /go/src/github.com/kamio06/mystery_land
+ADD . /go/src/github.com/kamio06/mystery_land/apiserver
 RUN go get -u github.com/gin-gonic/gin
 
-EXPOSE 8888
+EXPOSE 8800

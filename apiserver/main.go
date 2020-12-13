@@ -2,31 +2,63 @@ package main
 
 import (
 	"net/http"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/kamio06/mystery_land/apiserver/mylib"
 )
 
+type JsonRequest struct {
+	Name  string `json:name`
+	Time  string    `json:time`
+	Success bool   `json:success`
+}
+
 func main() {
-	// デフォルトのミドルウェアでginのルーターを作成
-	// Logger と アプリケーションクラッシュをキャッチするRecoveryミドルウェア を保有しています
-	//db接続
-	//mylib.Createtable()
+	r := gin.Default()
 
-	//router := gin.Default()
-	//
-	//// ルーター設定
-	//// ブラウザで「/」 にアクセスしたら「Hello World!」と表示される設定です
-	//router.GET("/", func(c *gin.Context) {
-	//	c.String(200, "Hello World!")
-	//})
-	//router.Run()
+	//ここからCorsの設定
+	r.Use(cors.New(cors.Config{
+		// アクセスを許可したいアクセス元
+		AllowOrigins: []string{
+			"http://localhost:8080",
+		},
+		// アクセスを許可したいHTTPメソッド(以下の例だとPUTやDELETEはアクセスできません)
+		AllowMethods: []string{
+			"POST",
+			"GET",
+			"FETCH",
+			"OPTIONS",
+		},
+		// 許可したいHTTPリクエストヘッダ
+		AllowHeaders: []string{
+			"Access-Control-Allow-Credentials",
+			"Access-Control-Allow-Headers",
+			"Content-Type",
+			"Content-Length",
+			"Accept-Encoding",
+			"Authorization",
+		},
+		// cookieなどの情報を必要とするかどうか
+		AllowCredentials: false,
+		// preflightリクエストの結果をキャッシュする時間
+		MaxAge: 24 * time.Hour,
+	}))
 
-	router := gin.Default()
-	router.LoadHTMLGlob("templates/*.html")
-	router.GET("/sample", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "sample.html", gin.H{
-			"title": "Main website",
-		})
+	r.GET("/", func(c *gin.Context) {
+		c.String(200, "Hello World!")
 	})
-	router.Run()
+	r.POST("/record/register", func(c *gin.Context) {
+		var json JsonRequest
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		mylib.Createtable(json.Name,json.Time,json.Success)
+		c.JSON(http.StatusOK, gin.H{"name": json.Name, "time": json.Time, "success": json.Success})
+	})
+
+	r.Run(":8800")
+
 }

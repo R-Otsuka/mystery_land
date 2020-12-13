@@ -1,20 +1,23 @@
 <template>
   <v-container class="text-center">
     <transition-group name="cell" tag="div" class="touchNumbers d-inline-flex">
-      <div v-for="(cell,index) in cells" @click="judgeAndHide(index)" :key="cell.id" class="cell rounded-circle" :class="{ show: cell.show }">
+      <div v-for="(cell,index) in cells" @click="judgeAndHide(index)" :key="cell.id" class="rounded-circle" :class="{ show: cell.show }">
         {{ cell.number }}
       </div>
     </transition-group>
     <div class="pa-4">
-      <v-btn round color="success" v-if="playing" @click="reset">
+      <v-btn rounded color="success" v-if="playing" @click="reset">
         Reset
       </v-btn>
-      <v-btn round color="success" v-else @click="start">
+      <v-btn rounded color="success" v-else @click="start">
         Start
       </v-btn>
       <div class="pa-2">
-        {{checkHours | zeroPadding}}：{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}
+        <span :class="{'red--text accent-2':timeup}">{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}</span> / 00：25：000
       </div>
+      <br>
+      <button @click="Send">Get</button><br>
+      <button @click="Post">Post</button>
       <div v-if="finish">
         <div v-if="clear">
           clear
@@ -29,6 +32,8 @@
 
 <script>
 import _ from 'lodash';
+import axios from 'axios' //追記
+
 export default {
   data:()=>({
     cells: Array.apply(null, { length:25 }).map(function(_, index) {
@@ -38,6 +43,7 @@ export default {
         show:true
       };
     }),
+    postres:"",
     openNum:0,
     playing:false,
     animationId: 0,
@@ -66,9 +72,11 @@ export default {
       this.cells[id].show = false
     },
     judgeAndHide(index) {
-      if (this.cells[index].id == this.openNum) {
-        this.deleteballon(index)
-        this.openNum += 1
+      if(this.playing == true){
+        if (this.cells[index].id == this.openNum) {
+          this.deleteballon(index)
+          this.openNum += 1
+        }
       }
     },
     start(){
@@ -118,8 +126,80 @@ export default {
       }
       this.startTime = this.diffTime = 0;
     },
+    async Send() {
+      axios.get('http://localhost:8800/')
+          .then(response => {
+            console.log(response.data) // mockData
+            console.log(response.status) // 200
+          })
+    },
+    async PostAPI() {
+      // const url = 'http://localhost:8800/record/register';
+      // //axiosでPOST送信
+      // axios.post(url, this.diffTime, this.diffTime, this.clear)
+      //   .then(res => {
+      //     if(res.data.result) {
+      //       //メール送信完了画面に遷移する
+      //     } else {
+      //       self.errors = res.data.errors;
+      //     }
+      //   })
+      //   .catch(
+      //       err => {
+      //         console.log(err)
+      //       }
+      //   );
+
+      // const res = await axios.post('', {
+      //   name: this.diffTime,
+      //   time: this.diffTime,
+      //   success: this.clear
+      // })
+      // console.log(res.data)
+    },
+
+    async Post() {
+      axios.post('http://localhost:8800/record/register', {
+        name: "otsukaaaa",
+        time: "10022",
+        success: true
+      })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      // const url = 'http://localhost:8800/record/register';
+      // const data = {
+      //   name: "otsuka",
+      //   time: "test",
+      //   success: this.clear
+      // };
+      // console.log(data)
+      // try {
+      //   return await axios.post(url, {
+      //     method: 'POST',
+      //     headers: {
+      //       'X-Requested-With': 'csrf', // csrf header
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify(data),
+      //   });
+      // } catch (e) {
+      //   console.log(e);
+      //   return e;
+      // }
+    }
   },
   computed:{
+    timeup(){
+      if(this.diffTime > 25000){
+        return true
+      }else{
+        return false
+      }
+    },
     finish(){
       if(this.openNum === 25){
         this.timeStop()
@@ -135,9 +215,6 @@ export default {
         return false
       }
     },
-    checkHours(){
-      return Math.floor(this.diffTime / 1000 / 60 / 60);
-    },
     checkMinutes(){
       return Math.floor(this.diffTime / 1000 / 60) % 60;
     },
@@ -147,37 +224,71 @@ export default {
     checkMiliSeconds(){
       return Math.floor(this.diffTime % 1000);
     },
+
   }
 }
 </script>
 <style scoped>
+
 .touchNumbers {
   display: flex;
   flex-wrap: wrap;
-  width:600px;
+  width:300px;
   margin-top: 10px;
 }
-.cell {
+.rounded-circle {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  border-radius: 50%;
   width: 55px;
   height: 55px;
-  /*border: 1px solid #aaa;*/
-  margin-right: 15px;
-  margin-bottom: 15px;
-}
-
-.cell-move {
-  transition: transform 0.6s;
-}
-
-.rounded-circle {
-  border-radius: 50%;
-  width: 90px;
-  height: 90px;
+  margin-right: 5px;
+  margin-bottom: 5px;
   background-color: #ffffff;
   transition:all 0.2s ease-out;
+}
+
+@media screen and (min-width:480px) {
+  .touchNumbers {
+    display: flex;
+    flex-wrap: wrap;
+    width:480px;
+    margin-top: 10px;
+  }
+  .rounded-circle {
+    display: flex;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    transition:all 0.2s ease-out;
+  }
+}
+@media screen and (min-width:1024px) {
+  .touchNumbers {
+    display: flex;
+    flex-wrap: wrap;
+    width:600px;
+    margin-top: 10px;
+  }
+  .rounded-circle {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    transition:all 0.2s ease-out;
+  }
+}
+.cell-move {
+  transition: transform 0.6s;
 }
 .show{
   background-color: #00acc1;

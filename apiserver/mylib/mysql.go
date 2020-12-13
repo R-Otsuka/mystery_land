@@ -14,12 +14,23 @@ type Test struct {
 	Memo   string `gorm:"type:varchar(400)"`
 	Status string `gorm:"type:char(2);not null"`
 }
+type JsonRequest struct {
+	Name  string `json:"name"`
+	Time  string    `json:"time"`
+	Success bool   `json:"success"`
+}
+type TouchNumbersRecord struct {
+	ID     int    `gorm:"primary_key;not null"`
+	Name   string `gorm:"type:varchar(200);not null"`
+	Time   string `gorm:"type:varchar(200);not null"`
+	Success bool `gorm:"type:bool;not null"`
+}
 
 func getGormConnect() *gorm.DB {
 	DBMS := "mysql"
 	USER := "root"
 	PASS := "root"
-	PROTOCOL := "tcp(mystery_land_mysql_1:3306)"
+	PROTOCOL := "tcp(localhost:3306)"
 	DBNAME := "mystery_land"
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
 	db, err := gorm.Open(DBMS, CONNECT)
@@ -38,18 +49,18 @@ func getGormConnect() *gorm.DB {
 	db.SingularTable(true)
 
 	// マイグレーション（テーブルが無い時は自動生成）
-	db.AutoMigrate(&Test{})
+	db.AutoMigrate(&TouchNumbersRecord{})
 
 	fmt.Println("db connected: ", &db)
 	return db
 }
 
-// 商品テーブルにレコードを追加
-func insertTest(registerTest *Test) {
+// レコードを追加
+func Insert(registerRecord *TouchNumbersRecord) {
 	db := getGormConnect()
 
 	// insert文
-	db.Create(&registerTest)
+	db.Create(&registerRecord)
 	defer db.Close()
 }
 
@@ -64,23 +75,26 @@ func findAllTest() []Test {
 	return Tests
 }
 
-func Createtable() {
+func Createtable(name string,time string, success bool) {
 	// Testテーブルにデータを運ぶための構造体を初期化
-	var Test = Test{
-		Name:   "testname",
-		Memo:   "testmemo",
-		Status: "01",
+	fmt.Println("======")
+	fmt.Println("名前:",name)
+	fmt.Println("時間:",time)
+	fmt.Println("真偽:",success)
+	var Record = TouchNumbersRecord{
+		Name:   name,
+		Time:   time,
+		Success: success,
 	}
-
 	// 構造体のポインタを渡す
-	insertTest(&Test)
+	Insert(&Record)
 
 	// Testテーブルのレコードを全件取得する
-	resultTests := findAllTest()
+	//resultTests := findAllTest()
 
 	// Testテーブルのレコードを全件表示する
-	for i := range resultTests {
-		fmt.Printf("index: %d, 商品ID: %d, 商品名: %s, メモ: %s, ステータス: %s\n",
-			i, resultTests[i].ID, resultTests[i].Name, resultTests[i].Memo, resultTests[i].Status)
-	}
+	//for i := range resultTests {
+	//	fmt.Printf("index: %d, 商品ID: %d, 商品名: %s, メモ: %s, ステータス: %s\n",
+	//		i, resultTests[i].ID, resultTests[i].Name, resultTests[i].Memo, resultTests[i].Status)
+	//}
 }
