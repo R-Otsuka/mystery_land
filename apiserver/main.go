@@ -46,8 +46,9 @@ func main() {
 		MaxAge: 24 * time.Hour,
 	}))
 
-	r.GET("/", func(c *gin.Context) {
-		c.String(200, "Hello World!")
+	r.GET("/record", func(c *gin.Context) {
+		records := mylib.FindAllRecord()
+		c.JSON(http.StatusOK, gin.H{"records" : records})
 	})
 	r.POST("/record/register", func(c *gin.Context) {
 		var json JsonRequest

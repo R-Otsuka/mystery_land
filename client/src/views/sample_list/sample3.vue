@@ -16,8 +16,8 @@
         <span :class="{'red--text accent-2':timeup}">{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}</span> / 00：30：000
       </div>
       <br>
-<!--      <button @click="Send">Get</button><br>-->
-<!--      <button @click="Post">Post</button>-->
+      <button @click="Send">Get</button><br>
+      <button @click="Post">Post</button>
       <div v-if="finish">
         <div v-if="!timeup">
           clear
@@ -125,9 +125,18 @@ export default {
       }
       this.startTime = this.diffTime = 0;
     },
+    async Send() { //ゲーム終了時にAPIを叩いて、タイムの記録とランキング表示を行う
+      axios.get('http://localhost:8800/record')
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+    },
     async Post() { //ゲーム終了時にAPIを叩いて、タイムの記録とランキング表示を行う
       axios.post('http://localhost:8800/record/register', {
-        name: "default",
+        name: "NoName",
         time: Math.round(this.diffTime), //millisecondで送信
         success: this.clear
       })
@@ -141,7 +150,7 @@ export default {
   },
   computed:{
     timeup(){ //timeLimitに間に合うとtrueを返す
-      const timeLimit = 30
+      const timeLimit = 30000
       if(this.diffTime > timeLimit){
         return true
       }else{

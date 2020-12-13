@@ -59,15 +59,15 @@ func Insert(registerRecord *TouchNumbersRecord) {
 }
 
 // 商品テーブルのレコードを全件取得
-//func findAllTest() []Test {
-//	db := getGormConnect()
-//	var Tests []Test
-//
-//	// select文
-//	db.Order("ID asc").Find(&Tests)
-//	defer db.Close()
-//	return Tests
-//}
+func FindAllRecord() []TouchNumbersRecord {
+	db := getGormConnect()
+	var Records []TouchNumbersRecord
+
+	// select文
+	db.Order("ID asc").Find(&Records)
+	defer db.Close()
+	return Records
+}
 
 //送信されて来た記録をdbに保存する。
 func DataInsert(name string,time int, success bool) {
@@ -83,8 +83,7 @@ func DataInsert(name string,time int, success bool) {
 	// 構造体のポインタを渡す
 	Insert(&Record)
 
-	// Testテーブルのレコードを全件取得する
-	//resultTests := findAllTest()
+	//テーブルのレコードを全件取得する
 
 	// Testテーブルのレコードを全件表示する
 	//for i := range resultTests {
