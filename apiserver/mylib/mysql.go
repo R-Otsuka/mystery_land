@@ -77,21 +77,24 @@ func findAllTest() []Test {
 
 func Createtable(name string,time string, success bool) {
 	// Testテーブルにデータを運ぶための構造体を初期化
+	fmt.Println("======")
+	fmt.Println("名前:",name)
+	fmt.Println("時間:",time)
+	fmt.Println("真偽:",success)
 	var Record = TouchNumbersRecord{
 		Name:   name,
 		Time:   time,
 		Success: success,
 	}
-
 	// 構造体のポインタを渡す
 	Insert(&Record)
 
 	// Testテーブルのレコードを全件取得する
-	resultTests := findAllTest()
+	//resultTests := findAllTest()
 
 	// Testテーブルのレコードを全件表示する
-	for i := range resultTests {
-		fmt.Printf("index: %d, 商品ID: %d, 商品名: %s, メモ: %s, ステータス: %s\n",
-			i, resultTests[i].ID, resultTests[i].Name, resultTests[i].Memo, resultTests[i].Status)
-	}
+	//for i := range resultTests {
+	//	fmt.Printf("index: %d, 商品ID: %d, 商品名: %s, メモ: %s, ステータス: %s\n",
+	//		i, resultTests[i].ID, resultTests[i].Name, resultTests[i].Memo, resultTests[i].Status)
+	//}
 }

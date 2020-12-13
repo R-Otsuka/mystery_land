@@ -4,7 +4,7 @@
       <v-main>
         <v-toolbar color="primary" class="elevation-2">
           <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-          <v-toolbar-title>Question</v-toolbar-title>
+          <v-toolbar-title></v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn icon>
             <v-icon>mdi-keyboard-backspace</v-icon>

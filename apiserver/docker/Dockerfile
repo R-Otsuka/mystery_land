@@ -16,4 +16,4 @@ WORKDIR /go/src/github.com/kamio06/mystery_land/apiserver
 ADD . /go/src/github.com/kamio06/mystery_land/apiserver
 RUN go get -u github.com/gin-gonic/gin
 
-EXPOSE 8888
+EXPOSE 8800

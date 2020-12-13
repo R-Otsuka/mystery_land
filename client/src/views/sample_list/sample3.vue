@@ -15,6 +15,9 @@
       <div class="pa-2">
         <span :class="{'red--text accent-2':timeup}">{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}</span> / 00：25：000
       </div>
+      <br>
+      <button @click="Send">Get</button><br>
+      <button @click="Post">Post</button>
       <div v-if="finish">
         <div v-if="clear">
           clear
@@ -29,6 +32,8 @@
 
 <script>
 import _ from 'lodash';
+import axios from 'axios' //追記
+
 export default {
   data:()=>({
     cells: Array.apply(null, { length:25 }).map(function(_, index) {
@@ -38,6 +43,7 @@ export default {
         show:true
       };
     }),
+    postres:"",
     openNum:0,
     playing:false,
     animationId: 0,
@@ -120,6 +126,71 @@ export default {
       }
       this.startTime = this.diffTime = 0;
     },
+    async Send() {
+      axios.get('http://localhost:8800/')
+          .then(response => {
+            console.log(response.data) // mockData
+            console.log(response.status) // 200
+          })
+    },
+    async PostAPI() {
+      // const url = 'http://localhost:8800/record/register';
+      // //axiosでPOST送信
+      // axios.post(url, this.diffTime, this.diffTime, this.clear)
+      //   .then(res => {
+      //     if(res.data.result) {
+      //       //メール送信完了画面に遷移する
+      //     } else {
+      //       self.errors = res.data.errors;
+      //     }
+      //   })
+      //   .catch(
+      //       err => {
+      //         console.log(err)
+      //       }
+      //   );
+
+      // const res = await axios.post('', {
+      //   name: this.diffTime,
+      //   time: this.diffTime,
+      //   success: this.clear
+      // })
+      // console.log(res.data)
+    },
+
+    async Post() {
+      axios.post('http://localhost:8800/record/register', {
+        name: "otsukaaaa",
+        time: "10022",
+        success: true
+      })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      // const url = 'http://localhost:8800/record/register';
+      // const data = {
+      //   name: "otsuka",
+      //   time: "test",
+      //   success: this.clear
+      // };
+      // console.log(data)
+      // try {
+      //   return await axios.post(url, {
+      //     method: 'POST',
+      //     headers: {
+      //       'X-Requested-With': 'csrf', // csrf header
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify(data),
+      //   });
+      // } catch (e) {
+      //   console.log(e);
+      //   return e;
+      // }
+    }
   },
   computed:{
     timeup(){
@@ -153,6 +224,7 @@ export default {
     checkMiliSeconds(){
       return Math.floor(this.diffTime % 1000);
     },
+
   }
 }
 </script>
