@@ -16,13 +16,13 @@ type Test struct {
 }
 type JsonRequest struct {
 	Name  string `json:"name"`
-	Time  string    `json:"time"`
+	Time  int    `json:"time"`
 	Success bool   `json:"success"`
 }
 type TouchNumbersRecord struct {
 	ID     int    `gorm:"primary_key;not null"`
 	Name   string `gorm:"type:varchar(200);not null"`
-	Time   string `gorm:"type:varchar(200);not null"`
+	Time   int `gorm:"type:int;not null"`
 	Success bool `gorm:"type:bool;not null"`
 }
 
@@ -75,7 +75,7 @@ func findAllTest() []Test {
 	return Tests
 }
 
-func Createtable(name string,time string, success bool) {
+func Createtable(name string,time int, success bool) {
 	// Testテーブルにデータを運ぶための構造体を初期化
 	fmt.Println("======")
 	fmt.Println("名前:",name)

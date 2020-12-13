@@ -11,7 +11,7 @@ import (
 
 type JsonRequest struct {
 	Name  string `json:name`
-	Time  string    `json:time`
+	Time  int    `json:time`
 	Success bool   `json:success`
 }
 
