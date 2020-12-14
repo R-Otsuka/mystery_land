@@ -41,7 +41,7 @@ services:
       dockerfile: ./docker/Dockerfile
     container_name: mystery-client
     ports:
-      - 8080:8080
+      - 80:8080 #左がホスト、右がコンテナ
     volumes:
       - ./client:/app
     working_dir: /app
