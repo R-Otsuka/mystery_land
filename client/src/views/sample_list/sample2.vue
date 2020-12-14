@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="text-center">
     <v-row justify="center" class="ma-5">
       <v-col cols="3" v-for="(number, index) in numRow1" v-bind:key="number.id">
         <div class="rounded-circle mx-auto balloon"
@@ -36,6 +36,9 @@
         </div>
       </v-col>
     </v-row>
+    <div v-if="clear" >
+      clear
+    </div>
   </v-container>
 </template>
 
@@ -44,6 +47,7 @@ import _ from 'lodash';
 export default {
   data:()=> ({
     length:4,
+    hit:0,
     opened:false,
     openedNum:null,
     openedNumIndex:null,
@@ -83,6 +87,13 @@ export default {
       const numRow = this.numbers.slice(12,16);
       return numRow
     },
+    clear(){
+      if(this.hit == 16){
+        return true
+      }else{
+        return false
+      }
+    }
   },
   methods:{
     numberShuffle() {
@@ -106,6 +117,7 @@ export default {
         }else if(this.openedNum == num){
           //hit
           this.deleteBalloon(arrayNo)
+          this.hit += 2
         }else{
           //外れ
           this.deleteBalloon(arrayNo)
@@ -127,8 +139,8 @@ export default {
       console.log("完了")
       console.log(index)
     }
-
   },
+
   created(){
     this.numberShuffle()
     let numarray = []
