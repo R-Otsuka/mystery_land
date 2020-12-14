@@ -109,8 +109,8 @@ export default {
         }else{
           //外れ
           this.deleteBalloon(arrayNo)
-          setTimeout(this.reviveBalloon(arrayNo), 10000);
-          setTimeout(this.reviveBalloon(this.openedNumIndex), 10000);
+          setTimeout(this.reviveBalloon, 500, arrayNo);
+          setTimeout(this.reviveBalloon, 500, this.openedNumIndex);
         }
         this.opened = false
         this.openedNum = null
@@ -152,7 +152,7 @@ export default {
   transition: all 500ms 0s ease;
 }
 .trans{
-  background-color:rgba(0,0,0,0.1);
+  background-color:rgba(0,0,0,1);
 }
 .untrans{
 
