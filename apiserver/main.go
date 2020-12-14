@@ -11,7 +11,7 @@ import (
 
 type JsonRequest struct {
 	Name  string `json:name`
-	Time  string    `json:time`
+	Time  int    `json:time`
 	Success bool   `json:success`
 }
 
@@ -22,7 +22,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		// アクセスを許可したいアクセス元
 		AllowOrigins: []string{
-			"http://localhost:8080",
+			"http://localhost",
 		},
 		// アクセスを許可したいHTTPメソッド(以下の例だとPUTやDELETEはアクセスできません)
 		AllowMethods: []string{
@@ -46,8 +46,9 @@ func main() {
 		MaxAge: 24 * time.Hour,
 	}))
 
-	r.GET("/", func(c *gin.Context) {
-		c.String(200, "Hello World!")
+	r.GET("/record", func(c *gin.Context) {
+		records := mylib.FindAllRecord()
+		c.JSON(http.StatusOK, gin.H{"records" : records})
 	})
 	r.POST("/record/register", func(c *gin.Context) {
 		var json JsonRequest
@@ -55,7 +56,7 @@ func main() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		mylib.Createtable(json.Name,json.Time,json.Success)
+		mylib.DataInsert(json.Name,json.Time,json.Success)
 		c.JSON(http.StatusOK, gin.H{"name": json.Name, "time": json.Time, "success": json.Success})
 	})
 

@@ -6,20 +6,24 @@
       </div>
     </transition-group>
     <div class="pa-4">
-      <v-btn rounded color="success" v-if="playing" @click="reset">
+      <v-btn rounded color="success" v-if="nowPlaying" @click="reset">
         Reset
       </v-btn>
       <v-btn rounded color="success" v-else @click="start">
         Start
       </v-btn>
       <div class="pa-2">
-        <span :class="{'red--text accent-2':timeup}">{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}</span> / 00：25：000
+        <span :class="{'red--text accent-2':timeup}">{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}</span> / 00：30：000
       </div>
       <br>
       <button @click="Send">Get</button><br>
       <button @click="Post">Post</button>
+      <!--ゲームを終了するとランキングが表示される-->
       <div v-if="finish">
-        <div v-if="clear">
+        <div class="ranking">
+          <!--どんなグラフを作るか...-->
+        </div>
+        <div v-if="!timeup">
           clear
         </div>
         <div v-else>
@@ -33,6 +37,8 @@
 <script>
 import _ from 'lodash';
 import axios from 'axios' //追記
+// import Chart from "chart.js"
+// import  Bar  from 'vue-chartjs';
 
 export default {
   data:()=>({
@@ -43,9 +49,9 @@ export default {
         show:true
       };
     }),
-    postres:"",
-    openNum:0,
-    playing:false,
+    records: "", //hashの設定あとでする。marshal,unmarshalを知る必要あり
+    openNumCount:0, //消した数字の数
+    nowPlaying:false,
     animationId: 0,
     hours: 0,
     minutes: 0,
@@ -65,37 +71,37 @@ export default {
     }
   },
   methods: {
-    shuffle() {
+    shuffle() { //数字のシャッフル、start時に実行
       this.cells = _.shuffle(this.cells);
     },
-    deleteballon(id) {
+    deleteNum(id) { //数字を消す。
       this.cells[id].show = false
     },
-    judgeAndHide(index) {
-      if(this.playing == true){
-        if (this.cells[index].id == this.openNum) {
-          this.deleteballon(index)
-          this.openNum += 1
+    judgeAndHide(index) { //数字クリック時に正誤判定を行う
+      if(this.nowPlaying == true){
+        if (this.cells[index].id == this.openNumCount) {
+          this.deleteNum(index)
+          this.openNumCount += 1
         }
       }
     },
-    start(){
+    start(){ //スタート時、シャッフルとタイマーを起動
       this.shuffle()
       this.timeStart()
-      this.playing = !this.playing
+      this.nowPlaying = !this.nowPlaying
     },
-    resetNumber(){
-      this.openNum = 0
-      // cellの全てをshowにする
-      for(var num of this.cells){
-        num.show = true
+    resetNumber(){ //数字の再表示
+      this.openNumCount = 0
+      // cellの全てを再表示する
+      for(let cell of this.cells){
+        cell.show = true
       }
     },
-    reset(){
+    reset(){ //ゲームリセット
       this.resetNumber()
       this.timeStop()
       this.timeReset()
-      this.playing = !this.playing
+      this.nowPlaying = !this.nowPlaying
     },
     setStartTime(time){
       //performance.now()自体は前回のページから今回のページへと、遷移を開始した瞬間からの経過時間を算出する
@@ -126,43 +132,21 @@ export default {
       }
       this.startTime = this.diffTime = 0;
     },
-    async Send() {
-      axios.get('http://localhost:8800/')
-          .then(response => {
-            console.log(response.data) // mockData
-            console.log(response.status) // 200
+    async Send() { //APIを叩いて、レコードを取得
+      axios.get('http://localhost:8800/record')
+          .then(function (response) {
+            console.log(response);
           })
-    },
-    async PostAPI() {
-      // const url = 'http://localhost:8800/record/register';
-      // //axiosでPOST送信
-      // axios.post(url, this.diffTime, this.diffTime, this.clear)
-      //   .then(res => {
-      //     if(res.data.result) {
-      //       //メール送信完了画面に遷移する
-      //     } else {
-      //       self.errors = res.data.errors;
-      //     }
-      //   })
-      //   .catch(
-      //       err => {
-      //         console.log(err)
-      //       }
-      //   );
-
-      // const res = await axios.post('', {
-      //   name: this.diffTime,
-      //   time: this.diffTime,
-      //   success: this.clear
-      // })
-      // console.log(res.data)
+          .catch(function (error) {
+            console.log(error);
+          });
     },
 
-    async Post() {
+    async Post() { //ゲーム終了時にAPIを叩いて、タイムの記録を行う
       axios.post('http://localhost:8800/record/register', {
-        name: "otsukaaaa",
-        time: "10022",
-        success: true
+        name: "NoName",
+        time: Math.round(this.diffTime), //millisecondで送信
+        success: this.clear
       })
           .then(function (response) {
             console.log(response);
@@ -170,46 +154,22 @@ export default {
           .catch(function (error) {
             console.log(error);
           });
-      // const url = 'http://localhost:8800/record/register';
-      // const data = {
-      //   name: "otsuka",
-      //   time: "test",
-      //   success: this.clear
-      // };
-      // console.log(data)
-      // try {
-      //   return await axios.post(url, {
-      //     method: 'POST',
-      //     headers: {
-      //       'X-Requested-With': 'csrf', // csrf header
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify(data),
-      //   });
-      // } catch (e) {
-      //   console.log(e);
-      //   return e;
-      // }
     }
   },
   computed:{
-    timeup(){
-      if(this.diffTime > 25000){
+    timeup(){ //timeLimitに間に合うとtrueを返す
+      const timeLimit = 30000
+      if(this.diffTime > timeLimit){
         return true
       }else{
         return false
       }
     },
-    finish(){
-      if(this.openNum === 25){
+    finish(){ //ゲームが終わるとtrueを返す
+      if(this.openNumCount === 25){
         this.timeStop()
-        return true
-      }else{
-        return false
-      }
-    },
-    clear() {
-      if (this.diffTime < 25000) {
+        //後々、名前の入力を受け付けるように仕様変更したい。
+        this.Post()
         return true
       }else{
         return false
@@ -224,7 +184,6 @@ export default {
     checkMiliSeconds(){
       return Math.floor(this.diffTime % 1000);
     },
-
   }
 }
 </script>
