@@ -18,7 +18,11 @@
       <br>
       <button @click="Send">Get</button><br>
       <button @click="Post">Post</button>
+      <!--ゲームを終了するとランキングが表示される-->
       <div v-if="finish">
+        <div class="ranking">
+          <!--どんなグラフを作るか...-->
+        </div>
         <div v-if="!timeup">
           clear
         </div>
@@ -33,6 +37,8 @@
 <script>
 import _ from 'lodash';
 import axios from 'axios' //追記
+// import Chart from "chart.js"
+// import  Bar  from 'vue-chartjs';
 
 export default {
   data:()=>({
@@ -43,6 +49,7 @@ export default {
         show:true
       };
     }),
+    records: "", //hashの設定あとでする。marshal,unmarshalを知る必要あり
     openNumCount:0, //消した数字の数
     nowPlaying:false,
     animationId: 0,
@@ -125,7 +132,7 @@ export default {
       }
       this.startTime = this.diffTime = 0;
     },
-    async Send() { //ゲーム終了時にAPIを叩いて、タイムの記録とランキング表示を行う
+    async Send() { //APIを叩いて、レコードを取得
       axios.get('http://localhost:8800/record')
           .then(function (response) {
             console.log(response);
@@ -134,7 +141,8 @@ export default {
             console.log(error);
           });
     },
-    async Post() { //ゲーム終了時にAPIを叩いて、タイムの記録とランキング表示を行う
+
+    async Post() { //ゲーム終了時にAPIを叩いて、タイムの記録を行う
       axios.post('http://localhost:8800/record/register', {
         name: "NoName",
         time: Math.round(this.diffTime), //millisecondで送信
