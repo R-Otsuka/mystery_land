@@ -37,7 +37,12 @@
       </v-col>
     </v-row>
     <div v-if="clear" >
-      clear
+      クリア！<br>
+      <router-link class="routerLink" to="/sample/3">
+        <v-btn rounded color="success" class="text-center margin">
+          次へ
+        </v-btn>
+      </router-link>
     </div>
   </v-container>
 </template>

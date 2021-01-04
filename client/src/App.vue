@@ -6,9 +6,11 @@
           <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
           <v-toolbar-title></v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn icon>
-            <v-icon>mdi-keyboard-backspace</v-icon>
-          </v-btn>
+          <router-link class="routerLink" to="/">
+            <v-btn icon>
+              <v-icon>mdi-keyboard-backspace</v-icon>
+            </v-btn>
+          </router-link>
         </v-toolbar>
         <div class="mt-8">
           <v-card class="mx-auto" max-width="1000">
@@ -52,3 +54,8 @@ export default {
   }),
 }
 </script>
+<style>
+.routerLink{
+  text-decoration: none;
+}
+</style>
