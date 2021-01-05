@@ -24,12 +24,8 @@
           <!--どんなグラフを作るか...-->
         </div>
         <div v-if="!timeup">
-          全問クリア！<br>
-          <router-link class="routerLink" to="/sample/2">
-            <v-btn rounded color="success" class="text-center margin">
-              次へ
-            </v-btn>
-          </router-link>
+          全問クリア<br>
+          thank you for your playing!
         </div>
         <div v-else>
           fail
