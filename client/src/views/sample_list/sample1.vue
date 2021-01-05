@@ -33,7 +33,14 @@
       </v-col>
     </v-row>
 <!--    クリアすると点字->パスワードに表示が変わる-->
-    <p v-if="clear" class="mx-auto text-center tenji">クリア！、password『hogefuga』</p>
+    <p v-if="clear" class="mx-auto text-center">
+      クリア！<br>
+      <router-link class="routerLink" to="/sample/2">
+        <v-btn rounded color="success" class="text-center margin">
+          次へ
+        </v-btn>
+      </router-link>
+    </p>
     <p v-else class="mx-auto text-center tenji">⠊⠛⠴⠐⠳⠽⠑⠱⠣⠐⠩⠛⠒⠊⠊⠷⠐⠞⠓</p>
     <v-row justify="center" class="circle-bottom">
       <v-col cols="3" class="text-sm-left">
@@ -107,6 +114,9 @@ export default {
         this.listShuffle()
       }
     },
+    next(){
+
+    }
   },
   created() {
     this.listShuffle()

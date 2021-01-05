@@ -16,15 +16,16 @@
         <span :class="{'red--text accent-2':timeup}">{{checkMinutes | zeroPadding}}：{{checkSeconds | zeroPadding}}：{{checkMiliSeconds | showMiliseconds}}</span> / 00：30：000
       </div>
       <br>
-      <button @click="Send">Get</button><br>
-      <button @click="Post">Post</button>
+<!--      <button @click="Send">Get</button><br>-->
+<!--      <button @click="Post">Post</button>-->
       <!--ゲームを終了するとランキングが表示される-->
       <div v-if="finish">
         <div class="ranking">
           <!--どんなグラフを作るか...-->
         </div>
         <div v-if="!timeup">
-          clear
+          全問クリア<br>
+          thank you for your playing!
         </div>
         <div v-else>
           fail
