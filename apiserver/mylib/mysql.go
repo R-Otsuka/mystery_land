@@ -24,7 +24,7 @@ func getGormConnect() *gorm.DB {
 	DBMS := "mysql"
 	USER := "root"
 	PASS := "root"
-	PROTOCOL := "tcp(localhost:3306)"
+	PROTOCOL := "tcp(mysql:3306)"//コンテナtoコンテナの通信はlocalhostではなくmysql(コンテナ名とするひつようあり)
 	DBNAME := "mystery_land"
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
 	db, err := gorm.Open(DBMS, CONNECT)
